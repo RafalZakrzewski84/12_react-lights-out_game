@@ -1,7 +1,8 @@
-import React, {Component} from "react";
-import Cell from "./Cell";
-import './Board.css';
+/** @format */
 
+import React, { Component } from 'react';
+import Cell from './Cell';
+import './Board.css';
 
 /** Game board of Lights out.
  *
@@ -30,59 +31,79 @@ import './Board.css';
  **/
 
 class Board extends Component {
+	static defaultProps = {
+		nrows: 5,
+		ncols: 5,
+		chanceLightStartsOn: Math.random(),
+	};
+	constructor(props) {
+		super(props);
+		this.state = {
+			hasWon: false,
+			board: [
+				[false, false, false, false, true],
+				[false, false, false, false, false],
+				[true, false, false, false, false],
+				[false, false, false, true, false],
+				[false, false, false, false, false],
+			],
+		};
+		// TODO: set initial state
+	}
 
-  constructor(props) {
-    super(props);
+	/** create a board nrows high/ncols wide, each cell randomly lit or unlit */
 
-    // TODO: set initial state
-  }
+	createBoard() {
+		let board = [];
+		for (let i = 0; i < 5; i++) {
+			for (let j = 0; j < 5; j++) {
+				board.push(j);
+			}
+		}
+		console.log('board', board);
+		// TODO: create array-of-arrays of true/false values
+		return board;
+	}
 
-  /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
+	/** handle changing a cell: update board & determine if winner */
 
-  createBoard() {
-    let board = [];
-    // TODO: create array-of-arrays of true/false values
-    return board
-  }
+	flipCellsAround(coord) {
+		let { ncols, nrows } = this.props;
+		let board = this.state.board;
+		let [y, x] = coord.split('-').map(Number);
 
-  /** handle changing a cell: update board & determine if winner */
+		function flipCell(y, x) {
+			// if this coord is actually on board, flip it
 
-  flipCellsAround(coord) {
-    let {ncols, nrows} = this.props;
-    let board = this.state.board;
-    let [y, x] = coord.split("-").map(Number);
+			if (x >= 0 && x < ncols && y >= 0 && y < nrows) {
+				board[y][x] = !board[y][x];
+			}
+		}
 
+		// TODO: flip this cell and the cells around it
 
-    function flipCell(y, x) {
-      // if this coord is actually on board, flip it
+		// win when every cell is turned off
+		// TODO: determine is the game has been won
 
-      if (x >= 0 && x < ncols && y >= 0 && y < nrows) {
-        board[y][x] = !board[y][x];
-      }
-    }
+		// this.setState({ board, hasWon });
+	}
 
-    // TODO: flip this cell and the cells around it
+	/** Render game board or winning message. */
 
-    // win when every cell is turned off
-    // TODO: determine is the game has been won
-
-    this.setState({board, hasWon});
-  }
-
-
-  /** Render game board or winning message. */
-
-  render() {
-
-    // if the game is won, just show a winning msg & render nothing else
-
-    // TODO
-
-    // make table board
-
-    // TODO
-  }
+	render() {
+		let showBoard = this.createBoard().map((c) => <Cell isLit={true} />);
+		console.log(showBoard);
+		return (
+			<>
+				<h1>Light Game</h1>
+				{showBoard}
+			</>
+		);
+		// if the game is won, just show a winning msg & render nothing else
+		// TODO
+		// make table board
+		// TODO
+	}
 }
-
 
 export default Board;
