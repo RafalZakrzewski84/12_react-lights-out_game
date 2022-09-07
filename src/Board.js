@@ -41,11 +41,11 @@ class Board extends Component {
 		this.state = {
 			hasWon: false,
 			board: [
-				[false, false, false, false, true],
-				[false, false, false, false, false],
-				[true, false, false, false, false],
-				[false, false, false, true, false],
-				[false, false, false, false, false],
+				[null, null, null, null, null],
+				[null, null, null, null, null],
+				[null, null, null, null, null],
+				[null, null, null, null, null],
+				[null, null, null, null, null],
 			],
 		};
 		// TODO: set initial state
@@ -55,10 +55,19 @@ class Board extends Component {
 
 	createBoard() {
 		let board = [];
+
+		function willLit() {
+			let random = Math.random();
+			if (random > 0.5) return true;
+			return false;
+		}
+
 		for (let i = 0; i < 5; i++) {
+			let row = [];
 			for (let j = 0; j < 5; j++) {
-				board.push(j);
+				row.push({ key: `${i}-${j}`, isLit: willLit() });
 			}
+			board.push(row);
 		}
 		console.log('board', board);
 		// TODO: create array-of-arrays of true/false values
@@ -91,12 +100,21 @@ class Board extends Component {
 	/** Render game board or winning message. */
 
 	render() {
-		let showBoard = this.createBoard().map((c) => <Cell isLit={true} />);
+		let showBoard = this.createBoard().map((row, idx) => (
+			<tr key={'row-' + idx}>
+				{row.map((c) => {
+					console.log('c is:', c);
+					return <Cell key={c.key} isLit={c.isLit} />;
+				})}
+			</tr>
+		));
 		console.log(showBoard);
 		return (
 			<>
 				<h1>Light Game</h1>
-				{showBoard}
+				<table>
+					<tbody>{showBoard}</tbody>
+				</table>
 			</>
 		);
 		// if the game is won, just show a winning msg & render nothing else
