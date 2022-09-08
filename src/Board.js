@@ -34,42 +34,38 @@ class Board extends Component {
 	static defaultProps = {
 		nrows: 5,
 		ncols: 5,
-		chanceLightStartsOn: Math.random(),
+		chanceLightStartsOn: 0.25,
 	};
 	constructor(props) {
 		super(props);
 		this.state = {
 			hasWon: false,
-			board: [
-				[null, null, null, null, null],
-				[null, null, null, null, null],
-				[null, null, null, null, null],
-				[null, null, null, null, null],
-				[null, null, null, null, null],
-			],
+			board: this.createBoard(),
 		};
 		// TODO: set initial state
+		this.flipCellsAround = this.flipCellsAround.bind(this);
 	}
 
 	/** create a board nrows high/ncols wide, each cell randomly lit or unlit */
 
 	createBoard() {
 		let board = [];
+		let { chanceLightStartsOn } = this.props;
 
 		function willLit() {
 			let random = Math.random();
-			if (random > 0.5) return true;
+			if (random < chanceLightStartsOn) return true;
 			return false;
 		}
 
 		for (let i = 0; i < 5; i++) {
 			let row = [];
 			for (let j = 0; j < 5; j++) {
-				row.push({ key: `${i}-${j}`, isLit: willLit() });
+				let coord = `${i}-${j}`;
+				row.push({ key: coord, isLit: willLit() });
 			}
 			board.push(row);
 		}
-		console.log('board', board);
 		// TODO: create array-of-arrays of true/false values
 		return board;
 	}
@@ -80,39 +76,45 @@ class Board extends Component {
 		let { ncols, nrows } = this.props;
 		let board = this.state.board;
 		let [y, x] = coord.split('-').map(Number);
-
+		console.log(coord, y, x);
 		function flipCell(y, x) {
 			// if this coord is actually on board, flip it
 
 			if (x >= 0 && x < ncols && y >= 0 && y < nrows) {
-				board[y][x] = !board[y][x];
+				board[y][x].isLit = !board[y][x].isLit;
 			}
 		}
 
 		// TODO: flip this cell and the cells around it
+		flipCell(y, x);
 
 		// win when every cell is turned off
 		// TODO: determine is the game has been won
 
-		// this.setState({ board, hasWon });
+		this.setState({ board });
 	}
 
 	/** Render game board or winning message. */
 
 	render() {
-		let showBoard = this.createBoard().map((row, idx) => (
+		let showBoard = this.state.board.map((row, idx) => (
 			<tr key={'row-' + idx}>
 				{row.map((c) => {
-					console.log('c is:', c);
-					return <Cell key={c.key} isLit={c.isLit} />;
+					return (
+						<Cell
+							key={c.key}
+							coord={c.key}
+							isLit={c.isLit}
+							flipCellsAroundMe={this.flipCellsAround}
+						/>
+					);
 				})}
 			</tr>
 		));
-		console.log(showBoard);
 		return (
 			<>
 				<h1>Light Game</h1>
-				<table>
+				<table className="Board">
 					<tbody>{showBoard}</tbody>
 				</table>
 			</>
