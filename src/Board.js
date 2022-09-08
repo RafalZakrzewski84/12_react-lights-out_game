@@ -58,10 +58,10 @@ class Board extends Component {
 			return false;
 		}
 
-		for (let i = 0; i < 5; i++) {
+		for (let y = 0; y < this.props.nrows; y++) {
 			let row = [];
-			for (let j = 0; j < 5; j++) {
-				let coord = `${i}-${j}`;
+			for (let x = 0; x < this.props.ncols; x++) {
+				let coord = `${y}-${x}`;
 				row.push({ key: coord, isLit: willLit() });
 			}
 			board.push(row);
@@ -75,13 +75,22 @@ class Board extends Component {
 	flipCellsAround(coord) {
 		let { ncols, nrows } = this.props;
 		let board = this.state.board;
+		let hasWon = this.state.board;
 		let [y, x] = coord.split('-').map(Number);
-		console.log(coord, y, x);
+		console.log(coord, y, x, y - 1, x - 1, y + 1, x + 1);
 		function flipCell(y, x) {
 			// if this coord is actually on board, flip it
 
-			if (x >= 0 && x < ncols && y >= 0 && y < nrows) {
+			if (x >= 0 && x < ncols - 1 && y >= 0 && y < nrows - 1) {
 				board[y][x].isLit = !board[y][x].isLit;
+				board[y + 1][x].isLit = !board[y + 1][x].isLit;
+				board[y][x + 1].isLit = !board[y][x + 1].isLit;
+			}
+			if (x > 0 && x < ncols - 1 && y > 0 && y < nrows - 1) {
+				board[y - 1][x].isLit = !board[y - 1][x].isLit;
+				board[y + 1][x].isLit = !board[y + 1][x].isLit;
+				board[y][x - 1].isLit = !board[y][x - 1].isLit;
+				board[y][x + 1].isLit = !board[y][x + 1].isLit;
 			}
 		}
 
