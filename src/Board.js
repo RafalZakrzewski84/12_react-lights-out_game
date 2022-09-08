@@ -81,21 +81,17 @@ class Board extends Component {
 		function flipCell(y, x) {
 			// if this coord is actually on board, flip it
 
-			if (x >= 0 && x < ncols - 1 && y >= 0 && y < nrows - 1) {
+			if (x >= 0 && x < ncols && y >= 0 && y < nrows) {
 				board[y][x].isLit = !board[y][x].isLit;
-				board[y + 1][x].isLit = !board[y + 1][x].isLit;
-				board[y][x + 1].isLit = !board[y][x + 1].isLit;
-			}
-			if (x > 0 && x < ncols - 1 && y > 0 && y < nrows - 1) {
-				board[y - 1][x].isLit = !board[y - 1][x].isLit;
-				board[y + 1][x].isLit = !board[y + 1][x].isLit;
-				board[y][x - 1].isLit = !board[y][x - 1].isLit;
-				board[y][x + 1].isLit = !board[y][x + 1].isLit;
 			}
 		}
 
 		// TODO: flip this cell and the cells around it
 		flipCell(y, x);
+		flipCell(y - 1, x); //flip up
+		flipCell(y + 1, x); //flip down
+		flipCell(y, x - 1); //flip left
+		flipCell(y, x + 1); //flip right
 
 		// win when every cell is turned off
 		// TODO: determine is the game has been won
@@ -120,6 +116,10 @@ class Board extends Component {
 				})}
 			</tr>
 		));
+		// if the game is won, just show a winning msg & render nothing else
+		// TODO
+		// make table board
+		// TODO
 		return (
 			<>
 				<h1>Light Game</h1>
@@ -128,10 +128,6 @@ class Board extends Component {
 				</table>
 			</>
 		);
-		// if the game is won, just show a winning msg & render nothing else
-		// TODO
-		// make table board
-		// TODO
 	}
 }
 
