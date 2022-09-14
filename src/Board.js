@@ -58,6 +58,7 @@ class Board extends Component {
 			return false;
 		}
 
+		// TODO: create array-of-arrays of true/false values
 		for (let y = 0; y < this.props.nrows; y++) {
 			let row = [];
 			for (let x = 0; x < this.props.ncols; x++) {
@@ -66,7 +67,6 @@ class Board extends Component {
 			}
 			board.push(row);
 		}
-		// TODO: create array-of-arrays of true/false values
 		return board;
 	}
 
@@ -75,9 +75,8 @@ class Board extends Component {
 	flipCellsAround(coord) {
 		let { ncols, nrows } = this.props;
 		let board = this.state.board;
-		let hasWon = this.state.board;
+		let hasWon = this.state.hasWon;
 		let [y, x] = coord.split('-').map(Number);
-		console.log(coord, y, x, y - 1, x - 1, y + 1, x + 1);
 		function flipCell(y, x) {
 			// if this coord is actually on board, flip it
 
@@ -88,15 +87,17 @@ class Board extends Component {
 
 		// TODO: flip this cell and the cells around it
 		flipCell(y, x);
-		flipCell(y - 1, x); //flip up
-		flipCell(y + 1, x); //flip down
-		flipCell(y, x - 1); //flip left
-		flipCell(y, x + 1); //flip right
+		// flipCell(y - 1, x); //flip up
+		// flipCell(y + 1, x); //flip down
+		// flipCell(y, x - 1); //flip left
+		// flipCell(y, x + 1); //flip right
 
 		// win when every cell is turned off
 		// TODO: determine is the game has been won
+		const isWon = (currentValue) => currentValue.isLit === false;
+		hasWon = board.flat().every(isWon);
 
-		this.setState({ board });
+		this.setState({ board, hasWon });
 	}
 
 	/** Render game board or winning message. */
@@ -123,9 +124,13 @@ class Board extends Component {
 		return (
 			<>
 				<h1>Light Game</h1>
-				<table className="Board">
-					<tbody>{showBoard}</tbody>
-				</table>
+				{this.state.hasWon ? (
+					'You have win!!!'
+				) : (
+					<table className="Board">
+						<tbody>{showBoard}</tbody>
+					</table>
+				)}
 			</>
 		);
 	}
